@@ -9,9 +9,19 @@ const cartContent = document.querySelector(".cart-content");
 const cartItems = document.querySelector(".cart-items");
 let cartTotal = document.querySelector(".cart-total");
 const cartBtn = document.querySelector(".cart-btn");
+const buttonOpenModal = document.querySelector(".btn--show-modal");
+const buttonCloseModal = document.querySelector(".btn--close-modal");
+const overlay = document.querySelector(".overlay");
+const modal = document.querySelector(".modal");
+// testimonal
+const slides = document.querySelectorAll(".slide");
+const btnLeft = document.querySelector(".slider__btn--left");
+const btnRight = document.querySelector(".slider__btn--right");
+const dotContainer = document.querySelector(".dots");
 
 let cart = [];
 let buttonDOM = [];
+let curSlide = 0;
 //////////////Model//////////////////
 class Model {
   getProduct = async function () {
@@ -55,7 +65,7 @@ class View {
       productCenter.insertAdjacentHTML("afterbegin", html);
     });
   }
-
+  //////////// CLICK NUT BAG BUTTON //////////////
   getBagButton() {
     const bagButton = [...document.querySelectorAll(".bag-btn")];
     buttonDOM = bagButton;
@@ -132,6 +142,7 @@ class View {
     cartContent.insertAdjacentHTML("afterbegin", html);
   }
 
+  ///////////    CART     /////////////////
   cartLogic() {
     clearCartBtn.addEventListener("click", () => {
       this.clearCart();
@@ -193,6 +204,88 @@ class View {
   getSingleButton(id) {
     return buttonDOM.find((item) => item.dataset.id === id);
   }
+  //////////         REVIEW    /////////////////////
+  // const slides = document.querySelectorAll(".slide");
+  // const btnLeft = document.querySelector(".slider__btn--left");
+  // const btnRight = document.querySelector(".slider__btn--right");
+  // const dotContainer = document.querySelector(".dots");
+
+  review() {
+    this.createDot();
+    this.gotoSlide(0);
+    this.activeDot(0);
+    btnLeft.addEventListener("click", (e) => {
+      this.prevSlide();
+    });
+    btnRight.addEventListener("click", (e) => {
+      this.nextSlide();
+    });
+  }
+
+  createDot() {
+    slides.forEach((_, i) => {
+      dotContainer.insertAdjacentHTML(
+        "beforeend",
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  }
+
+  activeDot(slide) {
+    document.querySelectorAll(".dots__dot").forEach((dot) => {
+      dot.classList.remove("dots__dot--active");
+    });
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add("dots__dot--active");
+  }
+
+  gotoSlide(slide) {
+    slides.forEach((s, i) => {
+      s.style.transform = `translateX(${100 * (i - slide)}%)`;
+    });
+  }
+
+  nextSlide() {
+    if (curSlide === slides.length - 1) {
+      curSlide = 0;
+    } else {
+      curSlide++;
+    }
+    this.activeDot(curSlide);
+    this.gotoSlide(curSlide);
+  }
+  prevSlide() {
+    if (curSlide === 0) {
+      curSlide = slides.length - 1;
+    } else {
+      curSlide--;
+    }
+    this.activeDot(curSlide);
+    this.gotoSlide(curSlide);
+  }
+
+  //////////  ĐĂNG KÝ POP-UP  /////////////////////
+  modalLogic() {
+    buttonOpenModal.addEventListener("click", this.openModal);
+    buttonCloseModal.addEventListener("click", this.closeModal);
+    overlay.addEventListener("click", this.closeModal);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+        this.closeModal();
+      }
+    });
+  }
+
+  openModal = function (e) {
+    e.preventDefault();
+    modal.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+  };
+  closeModal = function () {
+    modal.classList.add("hidden");
+    overlay.classList.add("hidden");
+  };
 }
 
 class Storage {
@@ -229,5 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(() => {
       view.getBagButton();
       view.cartLogic();
+      view.modalLogic();
+      view.review();
     });
 });

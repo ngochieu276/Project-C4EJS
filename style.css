@@ -410,13 +410,18 @@ h4 {
   background-color: var(--primaryColor);
   padding: 10rem;
   font-size: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .nav {
   list-style: none;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  width: 50%;
 }
 .nav__link {
   background-color: rgba(#fff, 0.05);
@@ -424,7 +429,7 @@ h4 {
   color: #000;
   font-size: 1.5rem;
   text-align: center;
-  display: block;
+  display: inline-block;
   font-size: 1.4rem;
   transition: all 0.2s;
   padding: 1.4rem;
@@ -442,6 +447,13 @@ h4 {
   color: #000;
   text-align: center;
   margin: 6rem auto 4rem auto;
+}
+
+@media only screen and (max-width: 37.5em) {
+  /*600px*/
+  .footer {
+    font-size: 1.5rem;
+  }
 }
 /* --------------- slide -------------- */
 .review {
